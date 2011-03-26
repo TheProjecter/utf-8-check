@@ -1,0 +1,86 @@
+<h1>RedSpark UTF-8 Check</h1>
+
+<h2>Einführung</h2>
+<p>
+UTF-8 ist die Abkürzung für 8bit UCS (Universal Character Set)
+Transformation Format und inzwischen die am weitesten verbreitete
+Kodierung für Unicode-Zeichen. Seit 2003 ist diese von der IETF, dem
+Unicode Consortium und der ISO identisch normiert und wird zur Nutzung
+in allen Internetprotokollen und Dokumenten empfohlen. Unser PHP-Script
+testet sowohl Datenbank-Anbindung als auch die PHP Scripting Engine.
+</p>
+
+<h2>Algorithmus</h2>
+<p>
+Bei der UTF-8 Kodierung wird jedes Unicode-Zeichen in einer
+Bytekette variabler Länge zugeornet. Obwohl der Algorithmus bis zu 8
+Bytes lange Ketten und damit über 4 Billionen Zeichen zuläßt, beschränkt
+sich die Kodierung auf die Hälfte. Dies ist ausreichend um alle
+Unicode-Kodierungen von 0 bis 0010 FFFF abzubilden. Da UTF-8 die ersten
+128 Zeichen des 7-bit ASCII-Codes abbildet, sind automatisch alle
+ASCII-Zeichenketten aufwärtskompatibel zu UTF-8.
+</p>
+<p>
+Ein Zeichen wird immer mit einem Startbyte und ein oder mehreren
+Folgebytes kodiert (Multibyte), sodass durch eine entsprechend
+standardisierte Kodierung auch einzelne Zeichen in der Mitte eines
+Datenstroms lesbar sind.
+</p>
+
+<h2>weitere Kodierungen</h2>
+<p>
+Bei UTF-16 werden Zeichen Byteketten mit 16-bit Blöcken
+gespeichert. Der Algorithmus ist das älteste Unicode-Kodierungsformat. Da bei der 
+Umwandlung in UTF-8 durch die Verwendung von Ersatzzeichen zuvor wieder ein Unicode-Zeichen
+erstellt werden muß und dies häufig nicht beachtet wird, hat sich eine neue Kodierung etabliert,
+die im nachhinein als CESU-8 normiert wurde.
+</p>
+<p>
+UTF-32 kodiert jedes Zeichen mit festen 4 Byte und ist damit die einfachste Kodierung. Der Vorteil
+liegt im schnellen Zugriff durch einfachste Zeigerarithmetik, auch die Anzahl der Zeichen eines
+Dokumentes läßt sich anhand der Dateigröße schnell ermitteln. Texte die überwiegend lateinische
+Buchstaben enthalten, benötigen allerdings den 4-fachen Speicherplatz. 
+</p>
+
+<h2>MySQL</h2>
+<p>
+MySQL unterscheidet Zeichensätze für die Speicherung der Daten (<i>character_set_database</i>) und 
+der Übertragung zum Client (<i>character_set_connection, character_set_client</i>i>). Unterscheiden 
+sich diese, wird automatisch übersetzt. Man kann jedoch Standard-Zeichensätze vorgeben, die für die 
+Speicherung und Übertragung genutzt werden. Selbst der Zeichensatz den MySQL vom Client
+erwartet, kann explizit gesetzt werden. Dies ist v.a. wichtig, um einen Standardzeichensatz zu haben,
+falls der Client einen nicht vorhandenen Zeichensatz anfordert oder MySQL älter als 4.1 ist.
+</p>
+<p>
+Zusätzlich kann noch eine Collation für jeden Zeichensatz ausgewählt werden, welche die Sortierreihenfolge
+bestimmt. Damit läßt sich z.B. festlegen, ob ein Ö als OE, O oder gar nach dem Z sortiert wird.
+
+<h2>PHP</h2>
+<p>
+Der Standardzeichensatz in PHP kann über die Variable <i>default_charset = utf8</i> in der Datei php.ini
+eingestellt werden.
+Da viele String-Funktionen in PHP ein Byte als ein Zeichen interpretieren (strlen('Ä') liefert 2), sollte man 
+hier die Erweiterung "Multibyte String" nutzen. Damit kann man die meisten original PHP-Funktionen mit einem
+vorangestellten "mb_" nutzen und so gefahrlos Multibyte Zeichensätze nutzen. 
+</p>
+
+<h2>Apache / Web-Server</h2>
+<p>
+Damit eine Webseite auch in UTF-8 ausgeliefert wird, muß im Header der korrekte Zeichensatz angegeben sein,
+ein Meta-Tag wird übrigens nur dann ausgewertet, wenn die Angabe im Header fehlt. Um dies zu erreichen kann man
+entweder den Zeichensatz per <i>AddDefaultCharset utf-8</i> in Apache oder der .htaccess Datei direkt oder aber 
+mit der PHP-Funktion <i>header("Content-Type: text/html; charset=utf-8")</i> setzen.
+</p>
+
+<h2>Hinweise</h2>
+<p>
+MySQL-Tabellen, die noch nicht in UTF-8 vorliegen, brauchen nicht konvertiert zu werden, es genügt die
+Angabe von UTF-8 für die Übertragung zum Client. Auch sollte möglichst auf die utf8encode und -decode Funktionen
+von PHP verzichtet werden und stattdessen unabhängig vom Zeichensatz programmiert werden.
+</p>
+
+<h2>Links</h2>
+<p>
+<a href="http://tools.ietf.org/html/rfc3629">http://tools.ietf.org/html/rfc3629</a><br>
+<a href="http://dev.mysql.com/doc/refman/5.1/de/charset.html">http://dev.mysql.com/doc/refman/5.1/de/charset.html</a><br>
+</p>

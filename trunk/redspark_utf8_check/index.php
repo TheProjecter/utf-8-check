@@ -4,11 +4,12 @@ class Utf8Check
 	protected static $assign = null;
 	public static $dberror = false;
 	
+	
 	public static function initDb() {
-		if ($_REQUEST) {
+		if ($_REQUEST && isset($_REQUEST["host"]) && isset($_REQUEST["user"]) && strlen($_REQUEST["host"]) && strlen($_REQUEST["user"])) {
 			$connection=mysql_connect($_REQUEST["host"], $_REQUEST["user"], $_REQUEST["pwd"]) or die("DB connection failed.");
 			//mysql_select_db($_REQUEST["db"], $connection) or die("DB table not found.");
-			if ($_REQUEST["useUtf8"]) {
+			if (isset($_REQUEST["useUtf8"]) && $_REQUEST["useUtf8"]) {
 				mysql_query("SET NAMES 'utf8'");
 				ini_set('default_charset', 'utf8');
 			}
@@ -265,11 +266,11 @@ function info(id){el=document.getElementById(id);var display=el.style.display?''
 <div style="clear: both"></div>
 <table class="tabelle">
 <form name="dbhost" method="post" action="">
-<tr><td width="50%">Hostname:</td><td width="50%"><input type="text" size="10" name="host" value="<?php echo $_REQUEST["host"];?>"/></td></tr>
-<!--<tr><td>Database:</td><td><input type="text" size="10" name="db" value="<?php echo $_REQUEST["db"];?>"/></td></tr>-->
-<tr><td>Username:</td><td><input type="text" size="10" name="user" value="<?php echo $_REQUEST["user"];?>"/></td></tr>
-<tr><td>Password:</td><td><input type="password" size="10" name="pwd" value="<?php echo $_REQUEST["pwd"];?>"/></td></tr>
-<tr><td><img src="http://www.redsparkframework.de/apidoc/media/images/Index.png" onclick="info('use_utf8')"> Set UTF-8 within script</td><td><input type="checkbox" name="useUtf8" <?php if ($_REQUEST["useUtf8"]) { echo "checked"; } ?>/></td></tr>
+<tr><td width="50%">Hostname:</td><td width="50%"><input type="text" size="10" name="host" value="<?php echo (isset($_REQUEST["host"])) ? $_REQUEST["host"] : '';;?>"/></td></tr>
+<!--<tr><td>Database:</td><td><input type="text" size="10" name="db" value="<?php echo (isset($_REQUEST["db"])) ? $_REQUEST["db"] : '';?>"/></td></tr>-->
+<tr><td>Username:</td><td><input type="text" size="10" name="user" value="<?php echo (isset($_REQUEST["user"])) ? $_REQUEST["user"] : '';?>"/></td></tr>
+<tr><td>Password:</td><td><input type="password" size="10" name="pwd" value="<?php echo (isset($_REQUEST["pwd"])) ? $_REQUEST["pwd"] : '';;?>"/></td></tr>
+<tr><td><img src="http://www.redsparkframework.de/apidoc/media/images/Index.png" onclick="info('use_utf8')"> Set UTF-8 within script</td><td><input type="checkbox" name="useUtf8" <?php if (isset($_REQUEST["useUtf8"]) && $_REQUEST["useUtf8"]) { echo "checked"; } ?>/></td></tr>
 <tr id="use_utf8" style="display:none"><td colspan="3" class="infotext"><?php echo Utf8Check::info('use_utf8');?></td></tr>
 <tr><td></td><td colspan="2"><br></br><input type="submit"/></td></tr>
 </form>
